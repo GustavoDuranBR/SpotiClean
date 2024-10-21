@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Visualizar Playlists - SpotiClean{% endblock %}
+
+{% block content %}
+<main class="container mt-5 pt-5">
+    <h1 class="text-center mb-4">Visualizar Playlists</h1>
+    <div id="playlist-list" class="row">
+        {% for playlist in playlists %}
+        <div class="col-md-6 mb-4"> <!-- Altere a largura das colunas para 6 (2 colunas de 12) -->
+            <div class="playlist-item list-group-item d-flex justify-content-between align-items-center" style="height: 100%;">
+                <span class="playlist-name">{{ playlist.name }}</span>
+                <form method="POST" action="{{ url_for('remove_playlist', playlist_id=playlist.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza de que deseja remover esta playlist?')">
+                        <i class="bi bi-trash"></i> Remover
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navegação de Paginação -->
+    <div class="pagination text-center mt-4">
+        {% if page > 1 %}
+            <a href="{{ url_for('view_playlists', page=page-1) }}" class="btn btn-outline-primary btn-sm">« Anterior</a>
+        {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+            <a href="{{ url_for('view_playlists', page=p) }}" class="btn btn-outline-primary btn-sm {{ 'active' if p == page }}">{{ p }}</a>
+        {% endfor %}
+        {% if page < total_pages %}
+            <a href="{{ url_for('view_playlists', page=page+1) }}" class="btn btn-outline-primary btn-sm">Próximo »</a>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

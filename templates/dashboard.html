@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SpotiClean{% endblock %}
+
+{% block content %}
+<div class="container"> <!-- Adicionei a classe container aqui -->
+    <div class="user-info d-flex align-items-center">
+        <img src="{{ user_image }}" alt="User Image" class="user-img img-fluid rounded-circle">
+        <div class="user-welcome ms-3">
+            <p class="welcome-text">Bem-vindo</p>
+            <p class="user-name fs-3">{{ user_name }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-content mt-4">
+        <h2 class="dashboard-title">Dashboard</h2>
+        <p class="dashboard-description">Gerencie suas playlists e músicas curtidas a partir do seu painel.</p>
+        
+        <div class="dashboard-button-container mt-4">
+            <h3 class="section-title">Ações Rápidas</h3>
+            <a href="{{ url_for('create_playlist') }}" class="btn btn-primary">Criar Playlist</a>
+            <a href="{{ url_for('view_playlists') }}" class="btn btn-primary">Ver Playlists</a>
+            <a href="{{ url_for('remove_liked_tracks') }}" class="btn btn-danger">Músicas Curtidas</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

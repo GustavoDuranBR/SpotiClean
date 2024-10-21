@@ -1,0 +1,384 @@
+/* Variáveis CSS (se o suporte estiver disponível) */
+:root {
+  --color-bg-dark: #191414;
+  --color-bg-light: #282828;
+  --color-text-light: #fff;
+  --color-accent: #1DB954;
+  --color-danger: #E60023;
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-info: #17a2b8;
+}
+
+/* Corpo da página */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+}
+
+/* Estilo do cabeçalho */
+.header {
+  background-color: var(--color-bg-light);
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  color: var(--color-text-light);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.nav-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu li {
+  margin-left: 15px;
+}
+
+.nav-menu .nav-link {
+  color: var(--color-text-light);
+  font-size: 1rem;
+  text-decoration: none;
+  padding: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-menu .nav-link:hover {
+  background-color: var(--color-bg-dark);
+  color: var(--color-accent);
+  border-radius: 5px;
+}
+
+/* Estilo do conteúdo principal */
+.main-content {
+  margin-top: 80px;
+  padding: 20px;
+  background-color: var(--color-bg-light);
+  border-radius: 8px;
+}
+
+/* Estilo do rodapé */
+.footer {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+  text-align: center;
+  padding: 15px 0;
+  width: 100%;
+}
+
+/* Container de informações do usuário */
+.user-info {
+  background-color: var(--color-bg-light);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.welcome-text {
+  font-size: 1.25rem;
+  color: #b3b3b3;
+}
+
+.user-name {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+/* Botões padronizados */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+  box-sizing: border-box;
+  min-width: 100px;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+}
+
+.btn-primary:hover {
+  background-color: #1a8e41;
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: var(--color-text-light);
+}
+
+.btn-danger:hover {
+  background-color: #c8101c;
+}
+
+.btn-success {
+  background-color: var(--color-success);
+  color: var(--color-text-light);
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+/* Estilo da lista de playlists */
+.playlist-item {
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #333;
+  color: var(--color-text-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Lista de artistas */
+#artist-list {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 50px;
+  border: 1px solid #444;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.artist-item {
+  background-color: #3a3a3a; /* Aumenta levemente o contraste */
+  border-radius: 5px;
+  padding: 12px; /* Um pouco mais de espaço interno */
+  margin-bottom: 12px; /* Espaço entre os itens */
+  color: #fff; /* Texto branco */
+  transition: background-color 0.3s; /* Transição suave */
+  display: flex; /* Certifique-se de que a exibição seja flex */
+  justify-content: space-between; /* Espaço entre o nome do artista e o botão */
+  align-items: center; /* Centraliza os itens verticalmente */
+}
+
+.artist-item:hover {
+  background-color: #4a4a4a;
+}
+
+.artist-item button {
+  background-color: var(--color-danger);
+  color: var(--color-text-light);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+.artist-item button:hover {
+  background-color: #c8101c;
+}
+
+/* Centralização de conteúdo */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilo dos campos de input */
+input[type="text"] {
+  background-color: #333;
+  border: 1px solid #444;
+  border-radius: 5px;
+  color: var(--color-text-light);
+  padding: 10px;
+  font-size: 1rem;
+  width: calc(100% - 22px);
+  margin-bottom: 15px;
+}
+
+input[type="text"]:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Estilo para mensagens flash */
+.flash-messages {
+  width: 80%;
+  padding: 10px;
+  position: relative;
+  z-index: 1000;
+  margin-top: 35px;
+}
+
+.flash-message {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  color: var(--color-text-light);
+}
+
+.flash-success {
+  background-color: var(--color-success);
+}
+
+.flash-error {
+  background-color: #dc3545;
+}
+
+.flash-info {
+  background-color: var(--color-info);
+}
+
+.flash-warning {
+  background-color: var(--color-warning);
+}
+
+/* Estilo dos botões */
+.track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.track-item span {
+  font-size: 16px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilo dos botões de paginação */
+.btn-light {
+  background-color: transparent;
+  color: var(--color-text-light);
+  border: 1px solid #444;
+  padding: 5px 10px;
+  margin: 0 5px;
+  font-size: 1rem;
+  text-align: center;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-light:hover {
+  background-color: #444;
+  color: var(--color-accent);
+}
+
+.btn-player {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.btn-player:hover {
+  background-color: #1ed760;
+}
+
+.btn-player:focus {
+  outline: none;
+}
+
+.button-container .btn {
+  margin: 0 10px;
+}
+
+/* Ajustes adicionais para botões de paginação */
+.pagination .btn {
+  height: 30px;
+  min-width: 30px;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.dashboard-description {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+}
+
+.activity-list li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.remove-artist-btn {
+  min-width: 35px; /* Tamanho mínimo do botão */
+  padding: 0; /* Remove o padding */
+  border-radius: 50%; /* Botão arredondado */
+  display: flex; /* Para centralizar o conteúdo */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  background-color: #dc3545; /* Cor do botão */
+  color: white; /* Cor do ícone */
+  transition: background-color 0.3s; /* Transição suave */
+  margin-left: 5px;
+}
+
+.remove-artist-btn:hover {
+  background-color: #c82333; /* Cor ao passar o mouse */
+}
+
+/* Estilizando o ícone */
+.remove-artist-btn i {
+  font-size: 16px; /* Tamanho do ícone */
+  line-height: 1; /* Centraliza o ícone no botão */
+}

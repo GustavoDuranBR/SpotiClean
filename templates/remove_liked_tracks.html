@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Músicas Curtidas{% endblock %}
+
+{% block content %}
+<main class="container mt-5 pt-5">
+    <h1 class="text-center mb-4">Músicas Curtidas</h1>
+    <div class="text-center mb-3">
+        <form method="GET" action="{{ url_for('liked_tracks', page=page) }}">
+            <div class="form-group">
+                <label for="sort" class="mr-2">Ordenar por:</label>
+                <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
+                    <option value="name_asc">Nome A-Z</option>
+                    <option value="name_desc">Nome Z-A</option>
+                    <option value="artist_asc">Artista A-Z</option>
+                    <option value="artist_desc">Artista Z-A</option>
+                </select>
+                <button type="submit" class="btn btn-success btn-sm ml-2">Ordenar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mb-3">
+        <button type="button" class="btn btn-light" id="select-all">
+            <i class="fa fa-check"></i> Selecionar Todos
+        </button>
+        <button type="button" class="btn btn-light" id="deselect-all">
+            <i class="fa fa-times"></i> Desmarcar Todos
+        </button>
+    </div>
+
+    <div id="track-list" class="track-list">
+        {% if tracks %}
+        <form method="POST" action="{{ url_for('liked_tracks') }}">
+            {% for track in tracks %}
+            <div class="track-item d-flex justify-content-between">
+                <span class="text-start">{{ track.name }} - {{ track.artist }}</span>
+                <input type="checkbox" name="track_ids" value="{{ track.id }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-danger mt-3">Remover Selecionadas</button>
+        </form>
+        {% else %}
+        <p>Nenhuma música curtida encontrada.</p>
+        {% endif %}
+    </div>
+
+    <div class="pagination text-center mt-4">
+        {% if page > 1 %}
+        <a href="{{ url_for('liked_tracks', page=1) }}" class="btn btn-player"><<</a>
+        <a href="{{ url_for('liked_tracks', page=page-1) }}" class="btn btn-player"><</a>
+        {% endif %}
+        
+        <span>Página {{ page }} de {{ total_pages }}</span>
+    
+        {% if page < total_pages %}
+        <a href="{{ url_for('liked_tracks', page=page+1) }}" class="btn btn-player">></a>
+        <a href="{{ url_for('liked_tracks', page=total_pages) }}" class="btn btn-player">>></a>
+        {% endif %}
+    </div>
+
+</main>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleciona todos os checkboxes
+        document.getElementById('select-all').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true; // Seleciona todos
+            });
+        });
+
+        // Desmarca todos os checkboxes
+        document.getElementById('deselect-all').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false; // Desmarca todos
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

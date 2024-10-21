@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SpotiClean{% endblock %}</title>
+
+    <!-- Fonts and CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!-- Font Awesome for icons (lixeira) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a class="logo" href="{{ url_for('home') }}">SpotiClean</a>
+            <ul class="nav-menu">
+                <li><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                <li><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a class="nav-link" href="{{ url_for('create_playlist') }}">Criar Playlist</a></li>
+                <li><a class="nav-link" href="{{ url_for('view_playlists') }}">Remover Playlist</a></li>
+                <li><a class="nav-link" href="{{ url_for('remove_liked_tracks') }}">Músicas Curtidas</a></li>
+                <li><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Mensagens Flash -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        {% block content %}
+        <!-- Conteúdo dinâmico inserido pelas páginas que estendem o base.html -->
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 SpotiClean. Todos os direitos reservados.</p>
+    </footer>
+
+    {% block scripts %}
+    <!-- Bloco para scripts adicionais nas páginas que estendem o base.html -->
+    {% endblock %}
+</body>
+
+</html>

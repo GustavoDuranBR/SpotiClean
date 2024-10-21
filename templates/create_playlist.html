@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Criar Playlist - SpotiClean{% endblock %}
+
+{% block content %}
+<main class="container mt-5 pt-5">
+    <h1 class="page-title text-center mb-4">Criar Playlist</h1>
+    <form method="POST" id="playlist-form" class="bg-dark p-4 rounded shadow">
+        <!-- Nome da Playlist -->
+        <div class="form-group mb-3">
+            <label for="playlist_name" class="form-label text-white">Nome da Playlist</label>
+            <input type="text" id="playlist_name" class="form-control" name="playlist_name" placeholder="Nome da Playlist" required>
+        </div>
+
+        <!-- Nome do Artista -->
+        <div class="form-group mb-3">
+            <label for="artist_name" class="form-label text-white">Nome do Artista</label>
+            <input type="text" id="artist_name" class="form-control" placeholder="Nome do Artista">
+        </div>
+
+        <!-- Botões -->
+        <div class="button-container d-flex justify-content-center gap-3">
+            <button type="button" id="add-artist-btn" class="btn btn-primary">Adicionar Artista</button>
+            <button type="submit" id="create-playlist-btn" class="btn btn-success">Criar Playlist</button>
+        </div>
+
+        <!-- Lista de Artistas Adicionados -->
+        <div id="artist-list" class="mt-3 text-white"></div>
+
+        <!-- Campo Oculto para Artistas -->
+        <input type="hidden" id="artist_names" name="artist_names"  required>
+    </form>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const artistInput = document.getElementById('artist_name');
+        const artistListDiv = document.getElementById('artist-list');
+        const hiddenArtistNamesInput = document.getElementById('artist_names');
+        const addArtistBtn = document.getElementById('add-artist-btn');
+        const playlistForm = document.getElementById('playlist-form');
+
+        let artistNames = []; // Lista para armazenar os nomes dos artistas
+
+        // Função para adicionar o artista
+        addArtistBtn.addEventListener('click', function () {
+            const artistName = artistInput.value.trim(); // Pega o valor do campo
+
+            if (artistName !== "") {
+                // Adiciona o artista à lista e atualiza a exibição
+                artistNames.push(artistName);
+                updateArtistList();
+
+                // Limpa o campo de texto do artista
+                artistInput.value = "";
+            } else {
+                alert("Por favor, insira um nome de artista."); // Mensagem de alerta se o campo estiver vazio
+            }
+        });
+
+        // Função para atualizar a lista de artistas exibida e o campo oculto
+        function updateArtistList() {
+            // Atualiza o campo oculto com os nomes dos artistas em formato de string separados por vírgulas
+            hiddenArtistNamesInput.value = artistNames.join(',');
+
+            // Limpa a exibição anterior
+            artistListDiv.innerHTML = '';
+
+            // Cria a nova lista de artistas com o botão de remoção
+            artistNames.forEach(function (artist, index) {
+                const artistItem = document.createElement('div');
+                artistItem.classList.add('artist-item', 'd-flex', 'justify-content-between', 'align-items-center', 'mb-2');
+                
+                const artistName = document.createElement('span');
+                artistName.textContent = `${index + 1}. ${artist}`;
+                artistItem.appendChild(artistName);
+
+                // Botão de remoção (ícone de lixeira)
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';  // Ícone de lixeira do Font Awesome
+                removeBtn.classList.add('remove-artist-btn', 'btn', 'btn-danger', 'btn-sm', 'ml-2');
+                removeBtn.setAttribute('aria-label', 'Remover artista'); // Acessibilidade
+                removeBtn.addEventListener('click', function() {
+                    removeArtist(index);
+                });
+
+                artistItem.appendChild(removeBtn);
+                artistListDiv.appendChild(artistItem);
+            });
+        }
+
+        // Função para remover um artista da lista
+        function removeArtist(index) {
+            // Remove o artista da lista
+            artistNames.splice(index, 1);
+            // Atualiza a exibição da lista
+            updateArtistList();
+        }
+
+        // Validar a lista de artistas ao enviar o formulário
+        playlistForm.addEventListener('submit', function (event) {
+            if (artistNames.length === 0) {
+                event.preventDefault(); // Impede o envio do formulário
+                alert("Por favor, adicione pelo menos um artista à playlist."); // Mensagem de alerta
+            }
+        });
+    });
+</script>
+{% endblock %}
