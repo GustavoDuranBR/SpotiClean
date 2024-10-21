@@ -1,4 +1,4 @@
-# Aplicativo Spotify
+# Aplicativo SpotiClean
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
 Este aplicativo permite que os usuários acessem suas playlists do Spotify, adicionem ou removam playlists diretamente pelo app, e criem playlists com base em artistas de interesse.
