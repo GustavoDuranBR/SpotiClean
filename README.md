@@ -72,7 +72,7 @@ app_spotify/
 
 1. **Clone este repositório**:
    ```bash
-   git clone https://github.com/seuusuario/app_spotify.git
+   git clone https://github.com/seuusuario//SpotiClean.git
    cd app_spotify
    ```
 
@@ -90,7 +90,7 @@ app_spotify/
 
 4. **Execute o programa**:
    ```bash
-   python app.py
+   python spotify_manager.py
    ```
 
 ## Uso
