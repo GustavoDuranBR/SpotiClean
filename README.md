@@ -28,6 +28,19 @@ Este aplicativo permite que os usuários acessem suas playlists do Spotify, adic
   - O aplicativo permite atualizar a lista de músicas que o usuário curtiu.
   - **Código Relevante**: `update_tracks` para recuperar as músicas curtidas e retornar como JSON.
 
+## Importância do arquivo .env
+
+Para manter suas informações de segurança seguras, é essencial criar um arquivo `.env` na raiz do seu projeto. Esse arquivo deve conter as seguintes variáveis:
+
+```plaintext
+FLASK_SECRET_KEY = "SUA_SECRET_KEY" 
+SPOTIPY_CLIENT_ID = "SEU_CLIENT_ID" 
+SPOTIPY_CLIENT_SECRET = "SUA_CLIENT_SECRET" 
+REDIRECT_URI = "SUA_URI"
+```
+
+Assegure-se de substituir os valores com suas credenciais reais. O arquivo `.env` não deve ser compartilhado publicamente, pois contém informações sensíveis que podem comprometer a segurança do seu aplicativo.
+
 ## Estrutura do Projeto
 
 O projeto está organizado da seguinte forma:
@@ -53,7 +66,6 @@ app_spotify/
 │   │   └── scripts.js            # Scripts JavaScript do projeto
 ├── README.md                     # Documentação do projeto
 └── requirements.txt              # Dependências do projeto
-
 ```
 
 ## Instruções de Instalação
