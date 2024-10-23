@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (confirm(`Tem certeza que deseja remover ${trackIds.length} músicas?`)) {
-            fetch('/remove_liked_tracks', {
+            fetch('/liked_tracks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Função para remover uma faixa
     function removeTrack(trackId) {
-        fetch('/remove_liked_tracks', {
+        fetch('/liked_tracks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

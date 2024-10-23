@@ -1,4 +1,4 @@
-/* Variáveis CSS (se o suporte estiver disponível) */
+/* Variáveis CSS */
 :root {
   --color-bg-dark: #191414;
   --color-bg-light: #282828;
@@ -8,6 +8,11 @@
   --color-success: #28a745;
   --color-warning: #ffc107;
   --color-info: #17a2b8;
+}
+
+/* Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 /* Corpo da página */
@@ -60,7 +65,7 @@ body {
   font-size: 1rem;
   text-decoration: none;
   padding: 10px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .nav-menu .nav-link:hover {
@@ -71,7 +76,7 @@ body {
 
 /* Estilo do conteúdo principal */
 .main-content {
-  margin-top: 80px;
+  margin-top: 80px; /* Espaço para o cabeçalho fixo */
   padding: 20px;
   background-color: var(--color-bg-light);
   border-radius: 8px;
@@ -121,9 +126,9 @@ body {
   text-align: center;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
   box-sizing: border-box;
   min-width: 100px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-primary {
@@ -178,15 +183,14 @@ body {
 }
 
 .artist-item {
-  background-color: #3a3a3a; /* Aumenta levemente o contraste */
+  background-color: #3a3a3a;
   border-radius: 5px;
-  padding: 12px; /* Um pouco mais de espaço interno */
-  margin-bottom: 12px; /* Espaço entre os itens */
-  color: #fff; /* Texto branco */
-  transition: background-color 0.3s; /* Transição suave */
-  display: flex; /* Certifique-se de que a exibição seja flex */
-  justify-content: space-between; /* Espaço entre o nome do artista e o botão */
-  align-items: center; /* Centraliza os itens verticalmente */
+  padding: 12px;
+  margin-bottom: 12px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .artist-item:hover {
@@ -228,6 +232,7 @@ input[type="text"] {
 input[type="text"]:focus {
   border-color: var(--color-accent);
   outline: none;
+  box-shadow: 0 0 5px var(--color-accent);
 }
 
 /* Estilo para mensagens flash */
@@ -244,6 +249,12 @@ input[type="text"]:focus {
   padding: 10px;
   border-radius: 5px;
   color: var(--color-text-light);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.flash-message.show {
+  opacity: 1;
 }
 
 .flash-success {
@@ -262,7 +273,7 @@ input[type="text"]:focus {
   background-color: var(--color-warning);
 }
 
-/* Estilo dos botões */
+/* Estilo dos itens da lista de faixas */
 .track-item {
   display: flex;
   align-items: center;
@@ -275,6 +286,7 @@ input[type="text"]:focus {
   font-size: 16px;
 }
 
+/* Estilo da paginação */
 .pagination {
   display: flex;
   justify-content: center;
@@ -291,7 +303,7 @@ input[type="text"]:focus {
   font-size: 1rem;
   text-align: center;
   border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-light:hover {
@@ -311,8 +323,8 @@ input[type="text"]:focus {
   border-radius: 50%;
   background-color: var(--color-accent);
   color: var(--color-text-light);
-  transition: background-color 0.3s;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .btn-player:hover {
@@ -333,6 +345,7 @@ input[type="text"]:focus {
   min-width: 30px;
 }
 
+/* Títulos do dashboard */
 .dashboard-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -350,6 +363,7 @@ input[type="text"]:focus {
   margin-bottom: 10px;
 }
 
+/* Estilo da lista de atividades */
 .activity-list {
   list-style: none;
   padding: 0;
@@ -360,25 +374,12 @@ input[type="text"]:focus {
   border-bottom: 1px solid #ddd;
 }
 
+/* Estilo do botão para remover artista */
 .remove-artist-btn {
-  min-width: 35px; /* Tamanho mínimo do botão */
-  padding: 0; /* Remove o padding */
-  border-radius: 50%; /* Botão arredondado */
-  display: flex; /* Para centralizar o conteúdo */
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
-  background-color: #dc3545; /* Cor do botão */
-  color: white; /* Cor do ícone */
-  transition: background-color 0.3s; /* Transição suave */
-  margin-left: 5px;
-}
-
-.remove-artist-btn:hover {
-  background-color: #c82333; /* Cor ao passar o mouse */
-}
-
-/* Estilizando o ícone */
-.remove-artist-btn i {
-  font-size: 16px; /* Tamanho do ícone */
-  line-height: 1; /* Centraliza o ícone no botão */
+  min-width: 35px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }

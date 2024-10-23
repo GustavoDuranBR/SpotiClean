@@ -32,16 +32,25 @@ O projeto está organizado da seguinte forma:
 ```
 app_spotify/
 │
-├── spotify_manager.py         # Arquivo principal com a lógica do aplicativo e rotas
-├── api.py                     # Manipulador da API do Spotify e funções relacionadas
-├── templates/                 # Pasta contendo os arquivos HTML para renderização
-│   ├── dashboard.html         # Página do dashboard do usuário
-│   ├── create_playlist.html    # Página para criar novas playlists
-│   ├── liked_tracks.html      # Página para visualizar músicas curtidas
-│   └── view_playlists.html    # Página para visualizar playlists do usuário
-├── static/                    # Pasta para arquivos estáticos (CSS, JS, imagens)
-├── README.md                  # Documentação do projeto
-└── requirements.txt           # Dependências do projeto
+├── spotify_manager.py            # Arquivo principal com a lógica do aplicativo e rotas
+├── api.py                        # Manipulador da API do Spotify e funções relacionadas
+├── templates/                    # Pasta contendo os arquivos HTML para renderização
+│   ├── base.html                 # Template base compartilhado por outras páginas
+│   ├── dashboard.html            # Página do dashboard do usuário
+│   ├── login.html                # Página de login
+│   ├── create_playlist.html      # Página para criar novas playlists
+│   ├── liked_tracks.html         # Página para visualizar músicas curtidas
+│   ├── remove_liked_tracks.html  # Página para remover músicas curtidas
+│   ├── logout.html               # Página de logout
+│   └── view_playlists.html       # Página para visualizar playlists do usuário
+├── static/                       # Pasta para arquivos estáticos (CSS, JS, imagens)
+│   ├── css/                      # Arquivos CSS
+│   │   └── styles.css            # Estilo principal do projeto
+│   ├── js/                       # Arquivos JavaScript
+│   │   └── scripts.js            # Scripts JavaScript do projeto
+├── README.md                     # Documentação do projeto
+└── requirements.txt              # Dependências do projeto
+
 ```
 
 ## Instruções de Instalação

@@ -5,15 +5,28 @@
 {% block content %}
 <main class="container mt-5 pt-5">
     <h1 class="text-center mb-4">Músicas Curtidas</h1>
+    
+    <!-- Filtro de busca por artista -->
     <div class="text-center mb-3">
-        <form method="GET" action="{{ url_for('liked_tracks', page=page) }}">
-            <div class="form-group">
+        <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
+            <div class="form-group d-inline-block">
+                <label for="search" class="mr-2">Buscar por Artista:</label>
+                <input type="text" id="search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}">
+                <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Ordenação -->
+    <div class="text-center mb-3">
+        <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
+            <div class="form-group d-inline-block">
                 <label for="sort" class="mr-2">Ordenar por:</label>
                 <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
-                    <option value="name_asc">Nome A-Z</option>
-                    <option value="name_desc">Nome Z-A</option>
-                    <option value="artist_asc">Artista A-Z</option>
-                    <option value="artist_desc">Artista Z-A</option>
+                    <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
+                    <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
+                    <option value="artist_asc" {% if request.args.get('sort') == 'artist_asc' %}selected{% endif %}>Artista A-Z</option>
+                    <option value="artist_desc" {% if request.args.get('sort') == 'artist_desc' %}selected{% endif %}>Artista Z-A</option>
                 </select>
                 <button type="submit" class="btn btn-success btn-sm ml-2">Ordenar</button>
             </div>
@@ -31,7 +44,7 @@
 
     <div id="track-list" class="track-list">
         {% if tracks %}
-        <form method="POST" action="{{ url_for('liked_tracks') }}">
+        <form method="POST" action="{{ url_for('liked_tracks', page=page) }}">
             {% for track in tracks %}
             <div class="track-item d-flex justify-content-between">
                 <span class="text-start">{{ track.name }} - {{ track.artist }}</span>
@@ -47,15 +60,15 @@
 
     <div class="pagination text-center mt-4">
         {% if page > 1 %}
-        <a href="{{ url_for('liked_tracks', page=1) }}" class="btn btn-player"><<</a>
-        <a href="{{ url_for('liked_tracks', page=page-1) }}" class="btn btn-player"><</a>
+        <a href="{{ url_for('liked_tracks', page=1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><<</a>
+        <a href="{{ url_for('liked_tracks', page=page-1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><</a>
         {% endif %}
         
         <span>Página {{ page }} de {{ total_pages }}</span>
     
         {% if page < total_pages %}
-        <a href="{{ url_for('liked_tracks', page=page+1) }}" class="btn btn-player">></a>
-        <a href="{{ url_for('liked_tracks', page=total_pages) }}" class="btn btn-player">>></a>
+        <a href="{{ url_for('liked_tracks', page=page+1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">></a>
+        <a href="{{ url_for('liked_tracks', page=total_pages, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">>></a>
         {% endif %}
     </div>
 
@@ -68,17 +81,13 @@
         // Seleciona todos os checkboxes
         document.getElementById('select-all').addEventListener('click', function () {
             const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = true; // Seleciona todos
-            });
+            checkboxes.forEach(checkbox => checkbox.checked = true);
         });
 
         // Desmarca todos os checkboxes
         document.getElementById('deselect-all').addEventListener('click', function () {
             const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false; // Desmarca todos
-            });
+            checkboxes.forEach(checkbox => checkbox.checked = false);
         });
     });
 </script>

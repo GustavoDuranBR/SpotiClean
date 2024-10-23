@@ -23,13 +23,15 @@
     <!-- Navegação de Paginação -->
     <div class="pagination text-center mt-4">
         {% if page > 1 %}
-            <a href="{{ url_for('view_playlists', page=page-1) }}" class="btn btn-outline-primary btn-sm">« Anterior</a>
+        <a href="{{ url_for('view_playlists', page=1) }}" class="btn btn-player"><<</a>
+        <a href="{{ url_for('view_playlists', page=page-1) }}" class="btn btn-player"><</a>
         {% endif %}
-        {% for p in range(1, total_pages + 1) %}
-            <a href="{{ url_for('view_playlists', page=p) }}" class="btn btn-outline-primary btn-sm {{ 'active' if p == page }}">{{ p }}</a>
-        {% endfor %}
+        
+        <span>Página {{ page }} de {{ total_pages }}</span>
+    
         {% if page < total_pages %}
-            <a href="{{ url_for('view_playlists', page=page+1) }}" class="btn btn-outline-primary btn-sm">Próximo »</a>
+        <a href="{{ url_for('view_playlists', page=page+1) }}" class="btn btn-player">></a>
+        <a href="{{ url_for('view_playlists', page=total_pages) }}" class="btn btn-player">>></a>
         {% endif %}
     </div>
 </main>
