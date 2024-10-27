@@ -3,6 +3,7 @@ from api import SpotifyHandler, SpotifyHandlerError
 import os
 import logging
 from dotenv import load_dotenv
+import time
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -33,6 +34,9 @@ def login():
     auth_url = sp_handler.get_auth_url()
     return redirect(auth_url)
 
+def is_token_expired(token_info):
+    return token_info['expires_at'] < time.time()
+
 @app.route('/callback')
 def callback():
     try:
@@ -49,7 +53,7 @@ def callback():
 @app.route('/dashboard')
 def dashboard():
     sp_handler = get_spotify_handler()
-    if not sp_handler:
+    if not sp_handler or is_token_expired(session['token_info']):
         return redirect(url_for('login'))
 
     try:
