@@ -10,7 +10,7 @@
           {% if messages %}
             <div class="alert-container">
               {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
+                <div class="alert alert-{{ category }} ">
                   {{ message }}
                 </div>
               {% endfor %}
@@ -18,11 +18,13 @@
           {% endif %}
         {% endwith %}
 
-        <h1>Você foi desconectado</h1>
-        <form action="{{ url_for('perform_logout') }}" method="post">
-            <button type="submit" class="btn btn-danger mt-4" aria-label="Desconectar">Desconectar</button>
+        <h1>Você está prestes a desconectar</h1>
+        <p>Obrigado por usar o SpotiClean. Você pode fazer login novamente a qualquer momento.</p>
+
+        <form action="{{ url_for('perform_spotify_logout') }}" method="post">  <!-- Formulário para desconectar do Spotify -->
+            <button type="submit" class="btn btn-danger mt-4" aria-label="Desconectar do Spotify">Desconectar do Spotify</button>
         </form>
-        <a href="{{ url_for('login') }}" class="btn btn-primary mt-4" aria-label="Voltar ao Login">Voltar ao Login</a>
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-4" aria-label="Voltar ao Login">Voltar ao Login</a>
     </div>
 </main>
 {% endblock %}

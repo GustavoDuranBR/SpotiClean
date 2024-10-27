@@ -5,34 +5,91 @@
 {% block content %}
 <main class="container mt-5 pt-5">
     <h1 class="text-center mb-4">Visualizar Playlists</h1>
-    <div id="playlist-list" class="row">
-        {% for playlist in playlists %}
-        <div class="col-md-6 mb-4"> <!-- Altere a largura das colunas para 6 (2 colunas de 12) -->
-            <div class="playlist-item list-group-item d-flex justify-content-between align-items-center" style="height: 100%;">
-                <span class="playlist-name">{{ playlist.name }}</span>
-                <form method="POST" action="{{ url_for('remove_playlist', playlist_id=playlist.id) }}" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza de que deseja remover esta playlist?')">
-                        <i class="bi bi-trash"></i> Remover
-                    </button>
-                </form>
+    
+    <!-- Filtro de busca por nome da playlist -->
+    <div class="text-center mb-3">
+        <form method="GET" action="{{ url_for('view_playlists', page=1) }}">
+            <div class="form-group d-inline-block">
+                <label for="search" class="mr-2">Buscar por Nome:</label>
+                <input type="text" id="search" name="playlist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('playlist', '') }}" aria-label="Buscar por nome da playlist">
+                <button type="submit" class="btn btn-primary ml-2">Buscar</button>
             </div>
-        </div>
-        {% endfor %}
+        </form>
     </div>
 
-    <!-- Navegação de Paginação -->
+    <!-- Ordenação -->
+    <div class="text-center mb-3">
+        <form method="GET" action="{{ url_for('view_playlists', page=1) }}">
+            <div class="form-group d-inline-block">
+                <label for="sort" class="mr-2">Ordenar por:</label>
+                <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
+                    <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
+                    <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
+                </select>
+                <button type="submit" class="btn btn-primary ml-2">Ordenar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Seleção de todas as playlists -->
+    <div class="text-center mb-3">
+        <button type="button" class="btn btn-light" id="select-all" aria-label="Selecionar todas as playlists">
+            <i class="fa fa-check"></i> Selecionar Todos
+        </button>
+        <button type="button" class="btn btn-light" id="deselect-all" aria-label="Desmarcar todas as playlists">
+            <i class="fa fa-times"></i> Desmarcar Todos
+        </button>
+    </div>
+
+    <!-- Listagem de playlists -->
+    <div id="playlist-list" class="track-list">
+        {% if playlists %}
+        <form method="POST" action="{{ url_for('remove_selected_playlists', page=page) }}">
+            {% for playlist in playlists %}
+            <div class="playlist-item d-flex justify-content-between align-items-center p-2">
+                <span class="text-start">{{ playlist.name }}</span>
+                <input type="checkbox" name="playlist_ids" value="{{ playlist.id }}" aria-label="Selecionar {{ playlist.name }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Tem certeza de que deseja remover as playlists selecionadas?');">Remover Selecionadas</button>
+        </form>
+        {% else %}
+        <p>Nenhuma playlist encontrada.</p>
+        {% endif %}
+    </div>
+
+    <!-- Paginação -->
     <div class="pagination text-center mt-4">
         {% if page > 1 %}
-        <a href="{{ url_for('view_playlists', page=1) }}" class="btn btn-player"><<</a>
-        <a href="{{ url_for('view_playlists', page=page-1) }}" class="btn btn-player"><</a>
+        <a href="{{ url_for('view_playlists', page=1, playlist=request.args.get('playlist'), sort=request.args.get('sort')) }}" class="btn btn-player"><<</a>
+        <a href="{{ url_for('view_playlists', page=page-1, playlist=request.args.get('playlist'), sort=request.args.get('sort')) }}" class="btn btn-player"><</a>
         {% endif %}
         
         <span>Página {{ page }} de {{ total_pages }}</span>
     
         {% if page < total_pages %}
-        <a href="{{ url_for('view_playlists', page=page+1) }}" class="btn btn-player">></a>
-        <a href="{{ url_for('view_playlists', page=total_pages) }}" class="btn btn-player">>></a>
+        <a href="{{ url_for('view_playlists', page=page+1, playlist=request.args.get('playlist'), sort=request.args.get('sort')) }}" class="btn btn-player">></a>
+        <a href="{{ url_for('view_playlists', page=total_pages, playlist=request.args.get('playlist'), sort=request.args.get('sort')) }}" class="btn btn-player">>></a>
         {% endif %}
     </div>
+
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleciona todos os checkboxes
+        document.getElementById('select-all').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#playlist-list input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        });
+
+        // Desmarca todos os checkboxes
+        document.getElementById('deselect-all').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#playlist-list input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        });
+    });
+</script>
 {% endblock %}

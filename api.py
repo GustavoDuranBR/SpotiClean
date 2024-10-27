@@ -238,5 +238,3 @@ class SpotifyHandler:
         except Exception as e:
             logger.error(f"Erro ao desfazer o follow nos artistas: {e}")
             raise SpotifyHandlerError(f"Erro ao desfazer o follow nos artistas: {e}")
-
-

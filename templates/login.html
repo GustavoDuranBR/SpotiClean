@@ -7,15 +7,28 @@
 <main class="container mt-5 pt-5">
     <!-- Seção de Boas-Vindas -->
     <section class="welcome-section text-center mb-5">
-        <h1 class="display-3">Bem-vindo ao SpotiClean</h1>
+        <h1 class="text-center mb-4">Bem-vindo ao SpotiClean</h1>
         <p class="lead">Sua plataforma para gerenciar playlists de forma simples e eficiente.</p>
-        <p class="mt-4">
+        
+        <p>
             O SpotiClean permite que você organize suas playlists do Spotify de maneira prática e rápida.<br>
-            Para isso, precisamos de acesso à sua conta do Spotify.<br> Isso nos permitirá listar suas músicas,
-            criar novas playlists, e remover<br> aquelas que você não quer mais ouvir.<br> <p>Fique tranquilo, seus dados
-            estão seguros conosco e só serão usados<br> para melhorar sua experiência com o SpotiClean.</p>
+            Para isso, precisamos de acesso à sua conta do Spotify.<br>
+            Isso nos permitirá listar suas músicas, criar novas playlists, e remover<br>
+            aquelas que você não quer mais ouvir.<br>
+            <strong>Fique tranquilo, seus dados estão seguros conosco e só serão usados<br> para melhorar sua experiência com o SpotiClean.</strong>
         </p>
-        <a href="{{ url_for('login') }}" class="btn btn-primary mt-4">Login com Spotify</a>
+
+        <a href="{{ url_for('login') }}" class="btn btn-primary mt-4" aria-label="Login com Spotify">Login com Spotify</a>
+    </section>
+
+    <!-- Seção de Recursos -->
+    <section class="features-section text-center mb-5">
+        <h2 class="display-4 mb-4">Recursos do SpotiClean</h2>
+        <ul class="list-unstyled mt-4">
+            <li><strong>Gerenciamento de Músicas:</strong> Adicione e remova músicas facilmente.</li>
+            <li><strong>Organização de Playlists:</strong> Crie playlists personalizadas em poucos cliques.</li>
+            <li><strong>Interface Amigável:</strong> Navegação intuitiva para todos os usuários.</li>
+        </ul>
     </section>
 </main>
 {% endblock %}

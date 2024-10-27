@@ -11,7 +11,7 @@
         <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
             <div class="form-group d-inline-block">
                 <label for="search" class="mr-2">Buscar por Artista:</label>
-                <input type="text" id="search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}">
+                <input type="text" id="search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}" aria-label="Buscar por artista">
                 <button type="submit" class="btn btn-primary ml-2">Buscar</button>
             </div>
         </form>
@@ -25,19 +25,17 @@
                 <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
                     <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
                     <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
-                    <option value="artist_asc" {% if request.args.get('sort') == 'artist_asc' %}selected{% endif %}>Artista A-Z</option>
-                    <option value="artist_desc" {% if request.args.get('sort') == 'artist_desc' %}selected{% endif %}>Artista Z-A</option>
                 </select>
-                <button type="submit" class="btn btn-success btn-sm ml-2">Ordenar</button>
+                <button type="submit" class="btn btn-primary ml-2">Ordenar</button>
             </div>
         </form>
     </div>
 
     <div class="text-center mb-3">
-        <button type="button" class="btn btn-light" id="select-all">
+        <button type="button" class="btn btn-light" id="select-all" aria-label="Selecionar todas as músicas">
             <i class="fa fa-check"></i> Selecionar Todos
         </button>
-        <button type="button" class="btn btn-light" id="deselect-all">
+        <button type="button" class="btn btn-light" id="deselect-all" aria-label="Desmarcar todas as músicas">
             <i class="fa fa-times"></i> Desmarcar Todos
         </button>
     </div>
@@ -46,12 +44,12 @@
         {% if tracks %}
         <form method="POST" action="{{ url_for('liked_tracks', page=page) }}">
             {% for track in tracks %}
-            <div class="track-item d-flex justify-content-between">
+            <div class="track-item d-flex justify-content-between align-items-center p-2">
                 <span class="text-start">{{ track.name }} - {{ track.artist }}</span>
-                <input type="checkbox" name="track_ids" value="{{ track.id }}">
+                <input type="checkbox" name="track_ids" value="{{ track.id }}" aria-label="Selecionar {{ track.name }}">
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-danger mt-3">Remover Selecionadas</button>
+            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Você tem certeza que deseja remover as músicas selecionadas?');">Remover Selecionadas</button>
         </form>
         {% else %}
         <p>Nenhuma música curtida encontrada.</p>

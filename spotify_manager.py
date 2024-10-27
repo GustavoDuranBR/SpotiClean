@@ -95,17 +95,55 @@ def view_playlists(page=1):
         return redirect(url_for('login'))
 
     try:
+        # Obtendo os parâmetros de ordenação da URL
+        sort = request.args.get('sort', 'name_asc')  # Padrão: ordem alfabética crescente
         limit = 10
         offset = (page - 1) * limit
+
+        # Obtém as playlists do usuário
         playlists = sp_handler.sp.current_user_playlists(limit=limit, offset=offset)
+
+        # Ordena as playlists com base na opção selecionada
+        if sort == 'name_asc':
+            playlists['items'].sort(key=lambda x: x['name'].lower())
+        elif sort == 'name_desc':
+            playlists['items'].sort(key=lambda x: x['name'].lower(), reverse=True)
+
         total_playlists = sp_handler.sp.current_user_playlists(limit=1)['total']
         total_pages = (total_playlists // limit) + (total_playlists % limit > 0)
 
-        return render_template('view_playlists.html', playlists=playlists['items'], page=page, total_pages=total_pages)
+        # Passa o parâmetro `sort` para o template
+        return render_template('view_playlists.html', playlists=playlists['items'], page=page, total_pages=total_pages, sort=sort)
     except Exception as e:
         logger.error(f"Erro ao recuperar playlists do usuário: {e}")
         flash('Erro ao recuperar playlists.', 'error')
         return redirect(url_for('view_playlists'))
+
+    
+@app.route('/remove_selected_playlists', methods=['POST'])
+def remove_selected_playlists():
+    sp_handler = get_spotify_handler()
+    if not sp_handler:
+        return redirect(url_for('login'))
+
+    try:
+        # Obtém os IDs das playlists selecionadas
+        playlist_ids = request.form.getlist('playlist_ids')
+        
+        if not playlist_ids:
+            flash('Nenhuma playlist selecionada para remoção.', 'warning')
+            return redirect(url_for('view_playlists'))
+        
+        # Remover cada playlist selecionada
+        for playlist_id in playlist_ids:
+            sp_handler.sp.current_user_unfollow_playlist(playlist_id)
+        
+        flash(f'{len(playlist_ids)} playlists removidas com sucesso.', 'success')
+    except Exception as e:
+        app.logger.error(f'Erro ao remover playlists selecionadas: {e}')
+        flash('Erro ao tentar remover playlists.', 'danger')
+    
+    return redirect(url_for('view_playlists'))
 
 @app.route('/remove_playlist/<playlist_id>', methods=['POST'])
 def remove_playlist(playlist_id):

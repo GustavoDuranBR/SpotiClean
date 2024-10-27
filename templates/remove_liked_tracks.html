@@ -4,15 +4,16 @@
 
 {% block content %}
 <main class="container mt-5 pt-5">
-    <h1 class="text-center mb-4">Músicas Curtidas</h1>
+    <h1 class="page-title text-center mb-4 text-light">Músicas Curtidas</h1>
     
     <!-- Filtro de busca por artista -->
     <div class="text-center mb-3">
         <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
             <div class="form-group d-inline-block">
                 <label for="artist-search" class="mr-2">Buscar por Artista:</label>
-                <input type="text" id="artist-search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}">
+                <input type="text" id="artist-search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}" aria-label="Buscar por artista">
                 <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="document.getElementById('artist-search').value = '';">Limpar</button>
             </div>
         </form>
     </div>
@@ -34,10 +35,10 @@
     </div>
 
     <div class="text-center mb-3">
-        <button type="button" class="btn btn-light" id="select-all">
+        <button type="button" class="btn btn-light" id="select-all" aria-label="Selecionar todos">
             <i class="fa fa-check"></i> Selecionar Todos
         </button>
-        <button type="button" class="btn btn-light" id="deselect-all">
+        <button type="button" class="btn btn-light" id="deselect-all" aria-label="Desmarcar todos">
             <i class="fa fa-times"></i> Desmarcar Todos
         </button>
     </div>
@@ -51,10 +52,11 @@
                 <input type="checkbox" name="track_ids" value="{{ track.id }}">
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-danger mt-3">Remover Selecionadas</button>
+            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Você tem certeza que deseja remover as músicas selecionadas?');">Remover Selecionadas</button>
         </form>
         {% else %}
         <p>Nenhuma música curtida encontrada.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-4">Adicionar Novas Músicas</a>
         {% endif %}
     </div>
 
