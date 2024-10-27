@@ -25,10 +25,8 @@
                 <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
                     <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
                     <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
-                    <option value="artist_asc" {% if request.args.get('sort') == 'artist_asc' %}selected{% endif %}>Artista A-Z</option>
-                    <option value="artist_desc" {% if request.args.get('sort') == 'artist_desc' %}selected{% endif %}>Artista Z-A</option>
                 </select>
-                <button type="submit" class="btn btn-success btn-sm ml-2">Ordenar</button>
+                <button type="submit" class="btn btn-primary ml-2">Ordenar</button>
             </div>
         </form>
     </div>

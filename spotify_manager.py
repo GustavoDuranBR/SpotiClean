@@ -222,7 +222,7 @@ def liked_tracks(page):
             return redirect(url_for('liked_tracks', page=page))
 
         # Recuperar todas as músicas curtidas
-        liked_tracks = sp_handler.sp.current_user_saved_tracks(limit=50)  # Limite maior para ter mais dados
+        liked_tracks = sp_handler.sp.current_user_saved_tracks(limit=50)
         tracks = [
             {
                 'id': track['track']['id'],
@@ -234,6 +234,7 @@ def liked_tracks(page):
         # Obter artista e busca da query string
         artist_query = request.args.get('artist')
         search_query = request.args.get('search')
+        sort_query = request.args.get('sort')
 
         # Filtrar as faixas conforme o nome do artista, se fornecido
         if artist_query:
@@ -242,6 +243,12 @@ def liked_tracks(page):
         # Filtrar as faixas conforme a consulta de busca, se fornecida
         if search_query:
             tracks = [track for track in tracks if search_query.lower() in track['name'].lower()]
+
+        # Ordenar as faixas conforme a seleção do usuário
+        if sort_query == 'name_asc':
+            tracks.sort(key=lambda x: x['name'].lower())
+        elif sort_query == 'name_desc':
+            tracks.sort(key=lambda x: x['name'].lower(), reverse=True)
 
         # Paginar os resultados filtrados
         total_tracks = len(tracks)
@@ -253,7 +260,8 @@ def liked_tracks(page):
                                page=page, 
                                total_pages=total_pages,
                                artist_query=artist_query,  
-                               search_query=search_query)  
+                               search_query=search_query,
+                               sort_query=sort_query)  # Adicione sort_query aqui
     except Exception as e:
         logger.error(f"Erro ao recuperar músicas curtidas: {e}")
         flash('Erro ao recuperar músicas curtidas.', 'error')
