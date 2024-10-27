@@ -1,1 +1,1 @@
-web: python spotify_manager.py
+web: gunicorn spotify_manager:app
