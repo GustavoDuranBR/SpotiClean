@@ -337,5 +337,5 @@ def logout():
     flash("Sessão encerrada com sucesso.", 'success')
     return redirect(url_for('home'))  # Redireciona para a página inicial
     
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
