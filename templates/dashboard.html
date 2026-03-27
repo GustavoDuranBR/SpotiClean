@@ -3,24 +3,23 @@
 {% block title %}Dashboard - SpotiClean{% endblock %}
 
 {% block content %}
-<div class="container mt-5"> <!-- Adicionei a classe container aqui -->
-    <div class="user-info d-flex align-items-center">
-        <img src="{{ user_image }}" alt="User Image" class="user-img img-fluid rounded-circle">
-        <div class="user-welcome ms-3">
-            <p class="welcome-text text-light">Bem-vindo</p> <!-- Adicionada classe text-light -->
-            <p class="user-name fs-3 text-light">{{ user_name }}</p> <!-- Adicionada classe text-light -->
+<div class="container mt-5 pt-5">
+    <div class="user-info d-flex align-items-center justify-content-center flex-column">
+        <img src="{{ user_image }}" alt="User Image" class="user-img img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #1db954;">
+        <div class="user-welcome text-center">
+            <p class="welcome-text text-light mb-0">Bem-vindo</p>
+            <p class="user-name fs-3 text-light font-weight-bold h2">{{ user_name }}</p>
         </div>
     </div>
 
-    <div class="dashboard-content mt-4">
-        <h1 class="text-center mb-4">Dashboard</h1> 
-        <p class="dashboard-description text-light">Gerencie suas playlists e músicas curtidas a partir do seu painel.</p> <!-- Adicionada classe text-light -->
-        
-        <div class="dashboard-button-container mt-4">
-            <h3 class="text-center mb-4">Ações Rápidas</h3> <!-- Adicionada classe text-light -->
-            <a href="{{ url_for('create_playlist') }}" class="btn btn-primary">Criar Playlist</a>
-            <a href="{{ url_for('view_playlists') }}" class="btn btn-primary">Ver Playlists</a>
-            <a href="{{ url_for('liked_tracks') }}" class="btn btn-primary">Músicas Curtidas</a>
+    <div class="dashboard-content mt-5 text-center">
+        <h1 class="mb-4 text-light">Painel de Controle</h1>
+        <p class="dashboard-description text-light mb-5">Gerencie suas playlists e músicas curtidas a partir do seu painel.</p>
+
+        <div class="dashboard-button-container d-flex justify-content-center flex-wrap gap-3">
+            <a href="{{ url_for('create_playlist') }}" class="btn btn-success btn-lg m-2"><i class="fas fa-plus mr-2"></i> Criar Playlist</a>
+            <a href="{{ url_for('view_playlists') }}" class="btn btn-primary btn-lg m-2"><i class="fas fa-list mr-2"></i> Ver Playlists</a>
+            <a href="{{ url_for('liked_tracks') }}" class="btn btn-info btn-lg m-2"><i class="fas fa-heart mr-2"></i> Músicas Curtidas</a>
         </div>
     </div>
 </div>

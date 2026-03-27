@@ -1,91 +1,94 @@
 {% extends "base.html" %}
 
-{% block title %}Músicas Curtidas{% endblock %}
+{% block title %}Músicas Curtidas - SpotiClean{% endblock %}
 
 {% block content %}
 <main class="container mt-5 pt-5">
     <h1 class="text-center mb-4">Músicas Curtidas</h1>
     
-    <!-- Filtro de busca por artista -->
-    <div class="text-center mb-3">
-        <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
-            <div class="form-group d-inline-block">
-                <label for="search" class="mr-2">Buscar por Artista:</label>
-                <input type="text" id="search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}" aria-label="Buscar por artista">
-                <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+    <div class="text-center mb-4">
+        <form method="GET" action="{{ url_for('liked_tracks', page=1) }}" class="d-flex justify-content-center align-items-center flex-wrap">
+            <div class="form-group mb-2 mr-2">
+                <input type="text" id="search" name="search" class="form-control" placeholder="Buscar por Música" value="{{ request.args.get('search', '') }}" aria-label="Buscar por música">
             </div>
-        </form>
-    </div>
-
-    <!-- Ordenação -->
-    <div class="text-center mb-3">
-        <form method="GET" action="{{ url_for('liked_tracks', page=1) }}">
-            <div class="form-group d-inline-block">
-                <label for="sort" class="mr-2">Ordenar por:</label>
-                <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
-                    <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
-                    <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
+            <div class="form-group mb-2 mr-2">
+                <input type="text" id="artist" name="artist" class="form-control" placeholder="Buscar por Artista" value="{{ request.args.get('artist', '') }}" aria-label="Buscar por artista">
+            </div>
+            <div class="form-group mb-2 mr-2">
+                <select id="sort" name="sort" class="form-control">
+                    <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>A-Z</option>
+                    <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Z-A</option>
                 </select>
-                <button type="submit" class="btn btn-primary ml-2">Ordenar</button>
             </div>
+            <button type="submit" class="btn btn-primary mb-2 mr-2">Filtrar</button>
+            <a href="{{ url_for('liked_tracks') }}" class="btn btn-secondary mb-2">Limpar</a>
         </form>
     </div>
 
     <div class="text-center mb-3">
-        <button type="button" class="btn btn-light" id="select-all" aria-label="Selecionar todas as músicas">
+        <button type="button" class="btn btn-outline-light btn-sm mr-2" id="select-all">
             <i class="fa fa-check"></i> Selecionar Todos
         </button>
-        <button type="button" class="btn btn-light" id="deselect-all" aria-label="Desmarcar todas as músicas">
+        <button type="button" class="btn btn-outline-light btn-sm" id="deselect-all">
             <i class="fa fa-times"></i> Desmarcar Todos
         </button>
     </div>
 
-    <div id="track-list" class="track-list">
+    <div id="track-list" class="track-list bg-dark p-3 rounded shadow centered-list-container">
         {% if tracks %}
         <form method="POST" action="{{ url_for('liked_tracks', page=page) }}">
-            {% for track in tracks %}
-            <div class="track-item d-flex justify-content-between align-items-center p-2">
-                <span class="text-start">{{ track.name }} - {{ track.artist }}</span>
-                <input type="checkbox" name="track_ids" value="{{ track.id }}" aria-label="Selecionar {{ track.name }}">
+            
+            <div class="scrollable-list">
+                {% for track in tracks %}
+                <div class="track-item list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center p-2 mb-2">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ track.image }}" alt="Capa de {{ track.name }}" class="rounded shadow-sm mr-3" style="width: 50px; height: 50px; object-fit: cover; border: 1px solid var(--color-bg-base);">
+                        
+                        <span class="text-start">
+                            <strong>{{ track.name }}</strong> <br>
+                            <small class="text-muted">{{ track.artist }}</small>
+                        </span>
+                    </div>
+                    <input type="checkbox" name="track_ids" value="{{ track.id }}" aria-label="Selecionar {{ track.name }}" style="transform: scale(1.3);">
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Você tem certeza que deseja remover as músicas selecionadas?');">Remover Selecionadas</button>
+
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Remover essas músicas da sua lista de curtidas?');">
+                    <i class="fas fa-trash-alt mr-2"></i>Remover Selecionadas
+                </button>
+            </div>
         </form>
         {% else %}
-        <p>Nenhuma música curtida encontrada.</p>
+        <p class="text-center text-light mt-3">Nenhuma música curtida encontrada.</p>
         {% endif %}
     </div>
 
-    <div class="pagination text-center mt-4">
+    <div class="pagination d-flex justify-content-center align-items-center mt-4 text-light">
         {% if page > 1 %}
-        <a href="{{ url_for('liked_tracks', page=1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><<</a>
-        <a href="{{ url_for('liked_tracks', page=page-1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><</a>
+        <a href="{{ url_for('liked_tracks', page=1, artist=request.args.get('artist'), search=request.args.get('search'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm mr-1"><i class="fas fa-angle-double-left"></i></a>
+        <a href="{{ url_for('liked_tracks', page=page-1, artist=request.args.get('artist'), search=request.args.get('search'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm mr-2"><i class="fas fa-angle-left"></i></a>
         {% endif %}
         
-        <span>Página {{ page }} de {{ total_pages }}</span>
+        <span class="mx-3">Página {{ page }} de {{ total_pages }}</span>
     
         {% if page < total_pages %}
-        <a href="{{ url_for('liked_tracks', page=page+1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">></a>
-        <a href="{{ url_for('liked_tracks', page=total_pages, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">>></a>
+        <a href="{{ url_for('liked_tracks', page=page+1, artist=request.args.get('artist'), search=request.args.get('search'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm ml-2 mr-1"><i class="fas fa-angle-right"></i></a>
+        <a href="{{ url_for('liked_tracks', page=total_pages, artist=request.args.get('artist'), search=request.args.get('search'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm"><i class="fas fa-angle-double-right"></i></a>
         {% endif %}
     </div>
-
 </main>
 {% endblock %}
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Seleciona todos os checkboxes
         document.getElementById('select-all').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = true);
+            document.querySelectorAll('#track-list input[type="checkbox"]').forEach(cb => cb.checked = true);
         });
-
-        // Desmarca todos os checkboxes
         document.getElementById('deselect-all').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('#track-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = false);
+            document.querySelectorAll('#track-list input[type="checkbox"]').forEach(cb => cb.checked = false);
         });
     });
 </script>

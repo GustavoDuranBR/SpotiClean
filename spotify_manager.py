@@ -1,31 +1,58 @@
+# spotify_manager.py
 from flask import Flask, render_template, redirect, request, session, url_for, flash, jsonify
 from api import SpotifyHandler, SpotifyHandlerError
-import os
 import logging
-from dotenv import load_dotenv
+from config import Config  # Importe o Config
 import time
+from functools import wraps
+import os
 
-# Carregar variáveis de ambiente do arquivo .env
-load_dotenv()
+
+# Permite HTTP apenas se estiver rodando localmente (desenvolvimento)
+if os.getenv('FLASK_ENV') == 'development':
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # Configurar o logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Configurando o Flask
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Defina uma chave secreta para a sessão
+app.config.from_object(Config)  # Carrega as configurações do Config
+
+# Definir a chave secreta para sessões Flask
+app.secret_key = Config.SECRET_KEY
 
 def get_spotify_handler():
     """Função auxiliar para obter o handler do Spotify."""
-    token_info = session.get('token_info')
+    token_info = session.get('spotify_token_info')
     if not token_info:
         return None
     sp_handler = SpotifyHandler()
-    sp_handler.get_access_token(token_info['access_token'])
+    sp_handler.get_access_token()  # Método usa session internamente
     return sp_handler
+
+def refresh_token_if_needed(sp_handler):
+    """Verifica se o token está expirado e renova se necessário."""
+    token_info = session.get('spotify_token_info')
+    if token_info and sp_handler.sp_oauth.is_token_expired(token_info):
+        try:
+            token_info = sp_handler.get_access_token()  # Atualiza o token
+            session['spotify_token_info'] = token_info
+            logger.info("Token renovado com sucesso.")
+        except SpotifyHandlerError as e:
+            logger.error(f"Erro ao renovar o token: {e}")
+            flash('Erro ao renovar o token do Spotify.', 'error')
+            return redirect(url_for('login'))
+    return token_info
 
 @app.route('/')
 def home():
+    # Verifica se o usuário já tem uma sessão ativa (está logado)
+    if 'spotify_token_info' in session:
+        return redirect(url_for('dashboard'))
+    
+    # Se não estiver logado, mostra a tela de login/boas-vindas
     return render_template('login.html')
 
 @app.route('/login')
@@ -42,23 +69,37 @@ def callback():
     try:
         code = request.args.get('code')
         sp_handler = SpotifyHandler()
-        token_info = sp_handler.get_access_token(code)
-        session['token_info'] = token_info
+        token_info = sp_handler.get_access_token(code=code)
+        session['spotify_token_info'] = token_info
         return redirect(url_for('dashboard'))
     except Exception as e:
         logger.error(f"Erro ao obter o token: {e}")
         flash('Erro ao obter o token do Spotify.', 'error')
         return redirect(url_for('home'))
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token_info = session.get('spotify_token_info')
+        if not token_info:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/dashboard')
+@login_required
 def dashboard():
     sp_handler = get_spotify_handler()
-    if not sp_handler or is_token_expired(session['token_info']):
+    if not sp_handler:
+        flash("Sessão inválida. Faça login novamente.", 'error')
         return redirect(url_for('login'))
+
+    # Verifica e renova o token se necessário
+    refresh_token_if_needed(sp_handler)
 
     try:
         user = sp_handler.sp.current_user()
-        user_name = user['display_name']
+        user_name = user.get('display_name', 'Usuário')
         user_image = user['images'][0]['url'] if user.get('images') else 'https://example.com/default-image.png'
         return render_template('dashboard.html', user_name=user_name, user_image=user_image)
     except Exception as e:
@@ -123,7 +164,6 @@ def view_playlists(page=1):
         flash('Erro ao recuperar playlists.', 'error')
         return redirect(url_for('view_playlists'))
 
-    
 @app.route('/remove_selected_playlists', methods=['POST'])
 def remove_selected_playlists():
     sp_handler = get_spotify_handler()
@@ -133,24 +173,24 @@ def remove_selected_playlists():
     try:
         # Obtém os IDs das playlists selecionadas
         playlist_ids = request.form.getlist('playlist_ids')
-        
+
         if not playlist_ids:
             flash('Nenhuma playlist selecionada para remoção.', 'warning')
             return redirect(url_for('view_playlists'))
-        
+
         # Remover cada playlist selecionada
         for playlist_id in playlist_ids:
-            sp_handler.sp.current_user_unfollow_playlist(playlist_id)
-        
+            sp_handler.remove_playlist(playlist_id)
+
         flash(f'{len(playlist_ids)} playlists removidas com sucesso.', 'success')
     except Exception as e:
         app.logger.error(f'Erro ao remover playlists selecionadas: {e}')
         flash('Erro ao tentar remover playlists.', 'danger')
-    
+
     return redirect(url_for('view_playlists'))
 
 @app.route('/remove_playlist/<playlist_id>', methods=['POST'])
-def remove_playlist(playlist_id):
+def remove_playlist_route(playlist_id):
     sp_handler = get_spotify_handler()
     if not sp_handler:
         return redirect(url_for('login'))
@@ -231,7 +271,8 @@ def liked_tracks(page):
             {
                 'id': track['track']['id'],
                 'name': track['track']['name'],
-                'artist': track['track']['artists'][0]['name']
+                'artist': track['track']['artists'][0]['name'],
+                'image': track['track']['album']['images'][0]['url'] if track['track']['album']['images'] else 'https://via.placeholder.com/50?text=Sem+Capa'
             } for track in liked_tracks['items']
         ]
 
@@ -248,29 +289,23 @@ def liked_tracks(page):
         if search_query:
             tracks = [track for track in tracks if search_query.lower() in track['name'].lower()]
 
-        # Ordenar as faixas conforme a seleção do usuário
+        # Ordenar as faixas conforme a consulta de ordenação
         if sort_query == 'name_asc':
-            tracks.sort(key=lambda x: x['name'].lower())
+            tracks.sort(key=lambda x: x['name'])
         elif sort_query == 'name_desc':
-            tracks.sort(key=lambda x: x['name'].lower(), reverse=True)
+            tracks.sort(key=lambda x: x['name'], reverse=True)
 
-        # Paginar os resultados filtrados
+        # Paginar resultados
         total_tracks = len(tracks)
         total_pages = (total_tracks // limit) + (total_tracks % limit > 0)
-        paginated_tracks = tracks[offset:offset + limit]
 
-        return render_template('liked_tracks.html', 
-                               tracks=paginated_tracks, 
-                               page=page, 
-                               total_pages=total_pages,
-                               artist_query=artist_query,  
-                               search_query=search_query,
-                               sort_query=sort_query)  # Adicione sort_query aqui
+        # Retornar a template com as faixas
+        return render_template('liked_tracks.html', tracks=tracks[offset:offset + limit], page=page, total_pages=total_pages)
     except Exception as e:
-        logger.error(f"Erro ao recuperar músicas curtidas: {e}")
-        flash('Erro ao recuperar músicas curtidas.', 'error')
-        return redirect(url_for('dashboard'))
- 
+        logger.error(f"Erro ao recuperar faixas curtidas: {e}")
+        flash('Erro ao recuperar faixas.', 'error')
+        return redirect(url_for('liked_tracks', page=1))
+
 @app.route('/liked_artists', defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route('/liked_artists/<int:page>', methods=['GET', 'POST'])
 def liked_artists_view(page):
@@ -287,7 +322,7 @@ def liked_artists_view(page):
             if selected_artist_ids:
                 try:
                     # Chamada correta para remover artistas
-                    sp_handler.sp.user_unfollow_artists(selected_artist_ids)  # Corrigido aqui
+                    sp_handler.unfollow_artists(selected_artist_ids)  # Use o método da classe
                     flash('Artistas removidos com sucesso!', 'success')
                 except SpotifyHandlerError as e:
                     logger.error(f"Erro ao remover artistas: {e}")
@@ -332,12 +367,15 @@ def liked_artists_view(page):
         flash('Erro inesperado ao recuperar artistas curtidos.', 'error')
         return redirect(url_for('dashboard'))
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout', methods=['POST'])
 def logout():
-    logger.info("Logout iniciado.")
-    session.pop('token_info', None)  # Remover o token do Spotify
-    session.pop('user_id', None)  # Remover o ID do usuário, se estiver sendo utilizado
-    logger.info("Sessão encerrada.")
-    flash("Sessão encerrada com sucesso.", 'success')
-    return redirect(url_for('home'))  # Redireciona para a página inicial
+    spotify_handler = SpotifyHandler()
+    spotify_handler.logout()  # Limpa o arquivo .cache
     
+    session.clear()  # Garante que a sessão inteira do Flask seja esvaziada
+    
+    flash('Você foi desconectado com sucesso!', 'success')
+    return redirect(url_for('home'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, debug=True)

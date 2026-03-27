@@ -3,32 +3,40 @@
 {% block title %}SpotiClean - Home{% endblock %}
 
 {% block content %}
-<!-- Main Content -->
 <main class="container mt-5 pt-5">
-    <!-- Seção de Boas-Vindas -->
-    <section class="welcome-section text-center mb-5">
-        <h1 class="text-center mb-4">Bem-vindo ao SpotiClean</h1>
-        <p class="lead">Sua plataforma para gerenciar playlists de forma simples e eficiente.</p>
+    <section class="welcome-section text-center mb-5 p-5 bg-dark rounded shadow">
+        <h1 class="text-center mb-4 text-success"><i class="fab fa-spotify mr-2"></i>SpotiClean</h1>
+        <p class="lead text-light">Sua plataforma para gerenciar playlists de forma simples e eficiente.</p>
         
-        <p>
+        <p class="text-light mt-4">
             O SpotiClean permite que você organize suas playlists do Spotify de maneira prática e rápida.<br>
-            Para isso, precisamos de acesso à sua conta do Spotify.<br>
+            Para isso, precisamos de acesso à sua conta.<br>
             Isso nos permitirá listar suas músicas, criar novas playlists, e remover<br>
-            aquelas que você não quer mais ouvir.<br>
-            <strong>Fique tranquilo, seus dados estão seguros conosco e só serão usados<br> para melhorar sua experiência com o SpotiClean.</strong>
+            aquelas que você não quer mais ouvir.<br><br>
+            <strong>Fique tranquilo, seus dados estão seguros conosco.</strong>
         </p>
 
-        <a href="{{ url_for('login') }}" class="btn btn-primary mt-4" aria-label="Login com Spotify">Login com Spotify</a>
+        <a href="{{ url_for('login') }}" class="btn btn-success btn-lg mt-4" aria-label="Login com Spotify">
+            <strong>Login com Spotify</strong>
+        </a>
     </section>
 
-    <!-- Seção de Recursos -->
-    <section class="features-section text-center mb-5">
-        <h2 class="display-4 mb-4">Recursos do SpotiClean</h2>
-        <ul class="list-unstyled mt-4">
-            <li><strong>Gerenciamento de Músicas:</strong> Adicione e remova músicas facilmente.</li>
-            <li><strong>Organização de Playlists:</strong> Crie playlists personalizadas em poucos cliques.</li>
-            <li><strong>Interface Amigável:</strong> Navegação intuitiva para todos os usuários.</li>
-        </ul>
+    <section class="features-section text-center mb-5 text-light">
+        <h2 class="mb-4">Recursos</h2>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <i class="fas fa-music fa-3x mb-3 text-info"></i>
+                <p><strong>Gerenciamento:</strong> Adicione e remova músicas facilmente.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-list-ul fa-3x mb-3 text-primary"></i>
+                <p><strong>Organização:</strong> Crie playlists personalizadas em cliques.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-desktop fa-3x mb-3 text-warning"></i>
+                <p><strong>Interface:</strong> Navegação intuitiva para todos.</p>
+            </div>
+        </div>
     </section>
 </main>
 {% endblock %}

@@ -1,90 +1,88 @@
 {% extends "base.html" %}
 
-{% block title %}Artistas Curtidos{% endblock %}
+{% block title %}Artistas Curtidos - SpotiClean{% endblock %}
 
 {% block content %}
 <main class="container mt-5 pt-5">
     <h1 class="text-center mb-4">Artistas Curtidos</h1>
     
-    <!-- Filtro de busca por artista -->
-    <div class="text-center mb-3">
-        <form method="GET" action="{{ url_for('liked_artists_view', page=1) }}">
-            <div class="form-group d-inline-block">
-                <label for="search" class="mr-2">Buscar por Artista:</label>
-                <input type="text" id="search" name="artist" class="form-control d-inline-block" style="width: auto;" value="{{ request.args.get('artist', '') }}">
-                <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+    <div class="text-center mb-4">
+        <form method="GET" action="{{ url_for('liked_artists_view', page=1) }}" class="d-flex justify-content-center align-items-center flex-wrap">
+            <div class="form-group mb-2 mr-2">
+                <input type="text" id="search" name="artist" class="form-control" placeholder="Buscar Artista" value="{{ request.args.get('artist', '') }}">
             </div>
-        </form>
-    </div>
-
-    <!-- Ordenação -->
-    <div class="text-center mb-3">
-        <form method="GET" action="{{ url_for('liked_artists_view', page=1) }}">
-            <div class="form-group d-inline-block">
-                <label for="sort" class="mr-2">Ordenar por:</label>
-                <select id="sort" name="sort" class="form-control d-inline-block" style="width: auto;">
+            <div class="form-group mb-2 mr-2">
+                <select id="sort" name="sort" class="form-control">
                     <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Nome A-Z</option>
                     <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Nome Z-A</option>
                 </select>
-                <button type="submit" class="btn btn-primary ml-2">Ordenar</button>
             </div>
+            <button type="submit" class="btn btn-primary mb-2 mr-2">Filtrar</button>
+            <a href="{{ url_for('liked_artists_view') }}" class="btn btn-secondary mb-2">Limpar</a>
         </form>
     </div>
 
     <div class="text-center mb-3">
-        <button type="button" class="btn btn-light" id="select-all">
+        <button type="button" class="btn btn-outline-light btn-sm mr-2" id="select-all">
             <i class="fa fa-check"></i> Selecionar Todos
         </button>
-        <button type="button" class="btn btn-light" id="deselect-all">
+        <button type="button" class="btn btn-outline-light btn-sm" id="deselect-all">
             <i class="fa fa-times"></i> Desmarcar Todos
         </button>
     </div>
 
-    <div id="artist-list" class="artist-list">
+    <div id="artist-list" class="artist-list bg-dark p-3 rounded shadow centered-list-container">
         {% if artists %}
         <form method="POST" action="{{ url_for('liked_artists_view', page=page) }}">
-            {% for artist in artists %}
-            <div class="artist-item d-flex justify-content-between">
-                <span class="text-start">{{ artist['name'] }}</span>  <!-- Exibe o nome do artista -->
-                <input type="checkbox" name="artist_ids" value="{{ artist['id'] }}">  <!-- ID do artista -->
+            
+            <div class="scrollable-list">
+                {% for artist in artists %}
+                <div class="artist-item list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center p-2 mb-2">
+                    <div class="d-flex align-items-center">
+                        {% set img_url = artist.images[0].url if artist.images|length > 0 else 'https://via.placeholder.com/50?text=Sem+Foto' %}
+                        <img src="{{ img_url }}" alt="Foto de {{ artist.name }}" class="rounded-circle mr-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--color-bg-base);">
+                        
+                        <span class="text-start font-weight-bold">{{ artist['name'] }}</span>
+                    </div>
+                    <input type="checkbox" name="artist_ids" value="{{ artist['id'] }}" style="transform: scale(1.3);">
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-danger mt-3">Remover Selecionados</button>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Deseja parar de seguir os artistas selecionados?');">
+                    <i class="fas fa-user-minus mr-2"></i>Remover Selecionados
+                </button>
+            </div>
         </form>
         {% else %}
-        <p>Nenhum artista curtido encontrado.</p>
+        <p class="text-center text-light mt-3">Nenhum artista encontrado.</p>
         {% endif %}
     </div>  
-    <div class="pagination text-center mt-4">
+
+    <div class="pagination d-flex justify-content-center align-items-center mt-4 text-light">
         {% if page > 1 %}
-        <a href="{{ url_for('liked_artists_view',  page=1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><<</a>
-        <a href="{{ url_for('liked_artists_view',  page=page-1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player"><</a>
+        <a href="{{ url_for('liked_artists_view', page=1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm mr-1"><i class="fas fa-angle-double-left"></i></a>
+        <a href="{{ url_for('liked_artists_view', page=page-1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm mr-2"><i class="fas fa-angle-left"></i></a>
         {% endif %}
         
-        <span>Página {{ page }} de {{ total_pages }}</span>
+        <span class="mx-3">Página {{ page }} de {{ total_pages }}</span>
     
         {% if page < total_pages %}
-        <a href="{{ url_for('liked_artists_view',  page=page+1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">></a>
-        <a href="{{ url_for('liked_artists_view',  page=total_pages, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-player">>></a>
+        <a href="{{ url_for('liked_artists_view', page=page+1, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm ml-2 mr-1"><i class="fas fa-angle-right"></i></a>
+        <a href="{{ url_for('liked_artists_view', page=total_pages, artist=request.args.get('artist'), sort=request.args.get('sort')) }}" class="btn btn-outline-light btn-sm"><i class="fas fa-angle-double-right"></i></a>
         {% endif %}
     </div>
-
 </main>
 {% endblock %}
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Seleciona todos os checkboxes
         document.getElementById('select-all').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('#artist-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = true);
+            document.querySelectorAll('#artist-list input[type="checkbox"]').forEach(cb => cb.checked = true);
         });
-
-        // Desmarca todos os checkboxes
         document.getElementById('deselect-all').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('#artist-list input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = false);
+            document.querySelectorAll('#artist-list input[type="checkbox"]').forEach(cb => cb.checked = false);
         });
     });
 </script>
